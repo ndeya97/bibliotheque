@@ -1,0 +1,30 @@
+entity Livre {
+	titre String maxlength(100) unique required,
+  desciption String,
+  isbn String maxlength(13) unique required,
+  code String maxlength(10) required,
+}
+
+entity Utilisateur {
+	nom String maxlength(45) required,
+  prenom String maxlength(45) required,
+  datenaissance String,
+  code String maxlength(10) required,
+  role String maxlength(20),
+  pseudo String maxlength(45) unique,
+  motdepasse String maxlength(45) required
+}
+
+entity Auteur {
+	auteur String maxlength(45) unique
+}
+
+entity Emplacement {
+	nomemplacement String maxlength(45) unique
+
+}
+
+entity Theme {
+	theme String maxlength(45) required
+}
+

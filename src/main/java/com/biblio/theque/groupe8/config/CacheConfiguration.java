@@ -48,6 +48,11 @@ public class CacheConfiguration {
             createCache(cm, com.biblio.theque.groupe8.domain.User.class.getName());
             createCache(cm, com.biblio.theque.groupe8.domain.Authority.class.getName());
             createCache(cm, com.biblio.theque.groupe8.domain.User.class.getName() + ".authorities");
+            createCache(cm, com.biblio.theque.groupe8.domain.Livre.class.getName());
+            createCache(cm, com.biblio.theque.groupe8.domain.Utilisateur.class.getName());
+            createCache(cm, com.biblio.theque.groupe8.domain.Auteur.class.getName());
+            createCache(cm, com.biblio.theque.groupe8.domain.Emplacement.class.getName());
+            createCache(cm, com.biblio.theque.groupe8.domain.Theme.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

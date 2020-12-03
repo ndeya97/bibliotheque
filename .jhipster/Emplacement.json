@@ -1,0 +1,26 @@
+{
+  "name": "Emplacement",
+  "fields": [
+    {
+      "fieldName": "nomemplacement",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength",
+        "unique"
+      ],
+      "fieldValidateRulesMaxlength": "45"
+    }
+  ],
+  "relationships": [],
+  "changelogDate": "20201127115221",
+  "entityTableName": "emplacement",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

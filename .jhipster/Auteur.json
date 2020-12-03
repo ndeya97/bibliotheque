@@ -1,0 +1,26 @@
+{
+  "name": "Auteur",
+  "fields": [
+    {
+      "fieldName": "auteur",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength",
+        "unique"
+      ],
+      "fieldValidateRulesMaxlength": "45"
+    }
+  ],
+  "relationships": [],
+  "changelogDate": "20201127115121",
+  "entityTableName": "auteur",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}
