@@ -14,14 +14,12 @@
 		<!--libs-snapshot -->
 			<snapshotRepository>
 				<id>snapshots</id>
-				<name>d83fea10e02a-snapshots</name>
-			<url>https://vps-d02dec5b.vps.ovh.net:8081/artifactory/libs-snapshot</url>
+			<url>https://bilonjea.jfrog.io/artifactory/libs-snapshot</url>
 			</snapshotRepository>
 		<!-- libs-release -->
 			<repository>
 				<id>central</id>
-				<name>d83fea10e02a-releases</name>
-			<url>https://vps-d02dec5b.vps.ovh.net:8081/artifactory/libs-release</url>
+			<url>https://bilonjea.jfrog.io/artifactory/libs-release</url>
 			</repository>
 	</distributionManagement>
 
