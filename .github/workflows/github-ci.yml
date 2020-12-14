@@ -2,7 +2,7 @@ name: Application CI
 on: [push, pull_request]
 jobs:
     pipeline:
-        name: bibliotheque pipeline
+        name: bibliotheque pipeline-auto
         runs-on: ubuntu-20.04
         if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.pull_request.title, '[skip ci]') && !contains(github.event.pull_request.title, '[ci skip]')"
         timeout-minutes: 40
