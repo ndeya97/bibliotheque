@@ -1,0 +1,196 @@
+name: Java CI
+on:
+  push:
+    branches:
+      - awa-dev-branch #test
+      - '**/feature.*/'
+
+
+  #release:
+       #branches:
+         # - test
+         # - master
+       #types: created
+
+
+jobs:
+  job1:
+    name: job1 Starting with a Maven workflow template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2 # The checkout step downloads a copy of your repository on the runner.
+      - name: set up node
+        uses: actions/setup-node@v1
+      - name: Install bats
+        run: npm install -g bats
+      - name: execute a cmd
+        run: bats -v
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+  job2:
+    name: job2 Specifying the JVM and node version and architecture
+    #needs: job1
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2 # The checkout step downloads a copy of your repository on the runner.
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+          architecture: x64
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.16.1
+      - name: Install node.js packages
+        run: npm install
+
+  job3:
+    name: job3 Running on a different operating system
+    needs: job2
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-16.04, ubuntu-18.04]
+        node: [6, 8, 10]
+    steps:
+      #- uses: actions/checkout@v2 # The checkout step downloads a copy of your repository on the runner.
+      #if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+          architecture: x64
+      #- name: Install node.js packages
+      #  run: npm install
+      - name: Example Checking os and node version
+        run: |
+          node --version
+          mvn -version
+          lsb_release -a
+  
+  job4:
+    name: job4 Building and testing your code
+    needs: job2
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2 # The checkout step downloads a copy of your repository on the runner.
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.16.1
+      - name: Install node.js packages
+        run: npm install
+      - name: Run backend test
+        run: mvn clean verify -P-webpack
+      - name: Run frontend test
+        run: npm run test
+
+  job5:
+    name: job5 Caching dependencies to improve run
+    #needs: job2
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Install node.js packages
+        run: npm install
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+  
+  job6:
+    name: job6 Packaging workflow data as artifacts
+    runs-on: ubuntu-20.04
+    #needs: job5
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - run: mvn -B package --file pom.xml
+      - run: |
+          pwd
+          mkdir staging && cp target/*.jar staging
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Package
+          path: staging
+      #- run: mkdir jacoco && cp target/jacoco/* jacoco
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: target/jacoco
+
+  job7:
+    name: job7 Publish to GitHub Packages Apache Maven
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: Publish to GitHub Packages Apache Maven
+        run: mvn deploy
+        env:
+          GITHUB_TOKEN: ${{ github.token }} # GITHUB_TOKEN is the default env for the password
+
+  job8:
+    name: job8 Publish release to GitHub Packages Apache Maven
+    #needs: job7
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Done release
+        if: github.event_name == 'release'  &&  github.event.type=='create' && github.ref == 'refs/heads/master' #contains(github.event.types.*, 'create')
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: echo "done  staff"
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: Publish to GitHub Packages Apache Maven
+        run: mvn deploy
+        env:
+          GITHUB_TOKEN: ${{ github.token }} # GITHUB_TOKEN is the default env for the password
+  
+  job10:
+      name: Deploy to Herroku
+     #needs: pipeline
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: akhileshns/heroku-deploy@v3.6.8 # This is the action
+          with:
+            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+            heroku_app_name: ${{secrets.HEROKU_APP_NAME}} #Must be unique in Heroku
+            heroku_email: ${{secrets.HEROKU_EMAIL}}
+            branch: "awa-dev-branch" #"test"
+            buildpack: ${{secrets.HEROKU_BUILD_PACK}}

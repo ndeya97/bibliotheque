@@ -37,7 +37,7 @@ jobs:
                   npm run test
             - uses: actions/setup-java@v1
               with:
-                 java-version: 11
+                java-version: 11
             - name: Analyze code with SonarQube
               continue-on-error: true
               env:
@@ -93,3 +93,39 @@ jobs:
                   GIT_TAG=:${GITHUB_REF#refs/tags/}
                   DOCKER_TAG=${GIT_TAG#:refs/heads/master}
                   mvn -ntp jib:build -Djib.to.image=${{ secrets.DOCKER_IMAGE_PREFIX }}${DOCKER_TAG} -Djib.to.auth.username="${{ secrets.DOCKER_USERNAME }}" -Djib.to.
+
+
+    #https://github.com/marketplace/actions/mvn-cmd
+    #https://github.com/marketplace/actions/action-maven-deploy
+    jobPublish:      
+      name: Job generating setting for mv deploy
+      #needs: pipeline
+      runs-on: ubuntu-20.04
+      steps:
+        - name: Generate Settings	
+          uses: qcastel/github-actions-maven/actions/maven@master
+          with:
+            maven-local-repo-path: ${{ secrets.JFROG_OSS_REPO_SNAPSHOTS }}
+            maven-repo-server-id: snapshots
+            maven-repo-server-username: ${{ secrets.JFROG_OSS_REPO_USER }}
+            maven-repo-server-password: ${{ secrets.JFROG_OSS_REPO_PASS }}
+            #maven-args: "./mvnw -ntp package deploy -Pprod -DskipTests"
+        - name: Publish artefact
+          run: |
+            cat ~/.m2/settings.xml
+            mvn -ntp package deploy -Pprod -DskipTests
+    
+    #https://github.com/marketplace/actions/deploy-to-heroku  
+    jobdeploy:
+      name: Deploy to Herroku
+      needs: pipeline
+      runs-on: ubuntu-20.04
+      steps:
+        - uses: actions/checkout@v2
+        - uses: akhileshns/heroku-deploy@v3.6.8 # This is the action
+          with:
+            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+            heroku_app_name: ${{secrets.HEROKU_APP_NAME}} #Must be unique in Heroku
+            heroku_email: ${{secrets.HEROKU_EMAIL}}
+            branch: "master"
+            buildpack: ${{secrets.HEROKU_BUILD_PACK}}
