@@ -31,3 +31,19 @@ jobs:
           java-version: 1.8
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+
+  job2:
+      name: job2 Specifying the JVM and node version and architecture
+      #needs: job1
+      runs-on: ubuntu-20.04
+      steps:
+        - uses: actions/checkout@v2 # The checkout step downloads a copy of your repository on the runner.
+        - uses: actions/setup-java@v1
+          with:
+            java-version: 1.8
+            architecture: x64
+        - uses: actions/setup-node@v1
+          with:
+            node-version: 12.16.1
+        - name: Install node.js packages
+          run: npm install
