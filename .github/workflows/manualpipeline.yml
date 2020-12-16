@@ -7,10 +7,10 @@ on:
 
 
   #release:
-       #branches:
-         # - test
-         # - master
-       #types: created
+      #branches:
+        # - test
+        # - master
+      #types: created
 
 
 jobs:
