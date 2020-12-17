@@ -1,24 +1,17 @@
 name: Java CI
 on:
-  push:
+  push: #ceci permet de faire le push dans la branche choisi
     branches:
-      - awa-dev-branch #test
+      - awa-dev-branch 
       - '**/feature.*/'
-
-
-  #release:
-      #branches:
-        # - test
-        # - master
-      #types: created
 
 
 jobs:
   job1:
     name: job1 Starting with a Maven workflow template
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2 # The checkout step downloads a copy of your repository on the runner.
+    runs-on: ubuntu-latest #execution de la version de VM=>ex:tester un exmple os
+    steps: #permet lister les differents étapes de notre app
+      - uses: actions/checkout@v2 # il checkout étape télécharge une copie de notre référentiel
       - name: set up node
         uses: actions/setup-node@v1
       - name: Install bats
@@ -31,7 +24,7 @@ jobs:
           java-version: 1.8
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-
+#chaque s'execute dans une vm
   job2:
       name: job2 Specifying the JVM and node version and architecture
       #needs: job1
