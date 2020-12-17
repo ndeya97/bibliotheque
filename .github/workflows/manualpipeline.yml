@@ -2,7 +2,7 @@ name: Java CI
 on:
   push: #ceci permet de faire le push dans la branche choisi
     branches:
-      - awa-dev-branch 
+      - master
       - '**/feature.*/'
 
 
@@ -24,7 +24,7 @@ jobs:
           java-version: 1.8
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-#chaque s'execute dans une vm
+#chaque s'execute dans une 
   job2:
       name: job2 Specifying the JVM and node version and architecture
       #needs: job1
